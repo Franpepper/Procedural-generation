@@ -6,16 +6,16 @@ public class MeshGenerator : MonoBehaviour
 {
     [Header("Dimensions")]
 
-    [Tooltip("Size of the plane along the X axis.")]
+    [Tooltip("X Size")]
     public float xSize;
 
-    [Tooltip("Size of the plane along the Z axis.")]
+    [Tooltip("Z Size")]
     public float zSize;
 
-    [Tooltip("Number of subdivisions along the X axis.")]
+    [Tooltip("X Subdivisions")]
     public int xSubdivisions;
 
-    [Tooltip("Number of subdivisions along the Z axis.")]
+    [Tooltip("Z Subdivisions")]
     public int zSubdivisions;
 
     [Header("Material")]
@@ -32,26 +32,21 @@ public class MeshGenerator : MonoBehaviour
 
     public void GenerateNewMesh ()
     {
-        // add the required components
         meshRenderer = gameObject.AddComponent<MeshRenderer>();
         meshRenderer.material = material;
 
         meshFilter = gameObject.AddComponent<MeshFilter>();
         meshCollider = gameObject.AddComponent<MeshCollider>();
 
-        // create a new mesh
         Mesh mesh = new Mesh();
         meshFilter.mesh = mesh;
 
-        // create vertices and uv array
         Vector3[] vertices = new Vector3[(xSubdivisions + 1) * (zSubdivisions + 1)];
         Vector2[] uv = new Vector2[vertices.Length];
 
-        // calculate length of each edge
         float xSubLength = xSize / (float)xSubdivisions;
         float zSubLength = zSize / (float)zSubdivisions;
 
-        // create vertices and uv
         for (int i = 0, z = 0; z <= zSubdivisions; z++)
         {
             for(int x = 0; x <= zSubdivisions; x++, i++)
@@ -61,11 +56,9 @@ public class MeshGenerator : MonoBehaviour
             }
         }
 
-        // set the vertices and uv
         mesh.vertices = vertices;
         mesh.uv = uv;
 
-        // create the triangles
         int[] tris = new int[xSubdivisions * zSubdivisions * 6];
 
         for (int ti = 0, vi = 0, y = 0; y < zSubdivisions; y++, vi++)
@@ -79,7 +72,6 @@ public class MeshGenerator : MonoBehaviour
             }
         }
 
-        // set the triangles and recalculate the normals
         mesh.triangles = tris;
         mesh.RecalculateNormals();
     }
